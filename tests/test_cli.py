@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
-from typing import Callable, Iterator, cast
+from typing import Callable, Iterator
 
 import click
 import click.testing
@@ -16,7 +16,7 @@ from luoda.cli import cli
 from luoda.config import schema
 
 
-@cast(Callable[[Callable], Iterator[Callable]], fixture)
+@fixture
 def invoke() -> Iterator[Callable]:
     runner = click.testing.CliRunner()
     with runner.isolated_filesystem():

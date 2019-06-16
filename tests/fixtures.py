@@ -5,18 +5,18 @@
 from os import chdir, getcwd
 from pathlib import Path
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import IO, Callable, Iterator, cast
+from typing import IO, Iterator
 
 from pytest import fixture
 
 
-@cast(Callable[[Callable], Iterator[IO[str]]], fixture)
+@fixture
 def tmpfile() -> Iterator[IO[str]]:
     with NamedTemporaryFile("w+", buffering=1) as tmp:
         yield tmp
 
 
-@cast(Callable[[Callable], Iterator[Path]], fixture)
+@fixture
 def tmpdir() -> Iterator[Path]:
     orig = getcwd()
 
