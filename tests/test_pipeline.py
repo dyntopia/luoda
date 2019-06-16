@@ -22,6 +22,7 @@ def test_unknown_plugins(tmpdir: Path) -> None:
     config.write_text(
         """
         [build]
+        collection-dir = "c"
         template-dir = "t"
         plugins = ["foo", "bar"]
         [site]
@@ -32,6 +33,7 @@ def test_unknown_plugins(tmpdir: Path) -> None:
         paths = []
         """
     )
+    mkdir("c")
     mkdir("t")
 
     with raises(PipelineError, match=r"unknown plugin\(s\)"):
@@ -81,6 +83,7 @@ def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
     config.write_text(
         """
         [build]
+        collection-dir = "c"
         template-dir = "t"
         plugins = []
         [site]
@@ -91,6 +94,7 @@ def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
         paths = ["*.md"]
         """
     )
+    mkdir("c")
     mkdir("t")
 
     mds = ["foo.md", "bar.md", "baz.md"]

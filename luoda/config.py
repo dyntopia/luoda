@@ -19,6 +19,7 @@ ExistingDir = All(IsDir(None), Dir)
 schema = Schema({
     Required("build"): {
         Required("build-dir", default="build"): Dir,
+        Required("collection-dir", default="collections"): ExistingDir,
         Required("template-dir", default="templates"): ExistingDir,
         Required("highlight", default="default"): str,
         Required("plugins", default=[]): [str],

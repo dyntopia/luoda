@@ -39,10 +39,13 @@ def test_missing_config(invoke: Callable) -> None:
 def test_invalid_config(invoke: Callable) -> None:
     config = {
         "build": {
+            "collection-dir": "c",
             "template-dir": "t",
         },
         "site": {},
     }  # type: dict
+
+    mkdir("c")
     mkdir("t")
 
     @cli.command()
@@ -64,11 +67,14 @@ def test_invalid_config(invoke: Callable) -> None:
 def test_valid_config(invoke: Callable) -> None:
     config = {
         "build": {
+            "collection-dir": "c",
             "template-dir": "t",
         },
         "site": {},
         "collections": []
     }  # type: dict
+
+    mkdir("c")
     mkdir("t")
 
     @cli.command()
@@ -89,12 +95,15 @@ def test_valid_config(invoke: Callable) -> None:
 def test_failed_build(invoke: Callable) -> None:
     config = {
         "build": {
+            "collection-dir": "c",
             "template-dir": "t",
             "plugins": ["foo"],
         },
         "site": {},
         "collections": [],
     }  # type: dict
+
+    mkdir("c")
     mkdir("t")
 
     with open("config", "w") as f:

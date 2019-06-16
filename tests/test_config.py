@@ -35,11 +35,13 @@ def test_invalid_type(tmpdir: Path) -> None:
     config.write_text(
         """
         [build]
+        collection-dir = "c"
         template-dir = "t"
         [collections]
         [site]
         """
     )
+    mkdir("c")
     mkdir("t")
 
     with raises(ConfigError, match="expected a list: collections"):
@@ -51,6 +53,7 @@ def test_invalid_build_dir(tmpdir: Path) -> None:
     config.write_text(
         """
         [build]
+        collection-dir = "c"
         template-dir = "t"
         build-dir = 1234
         [[collections]]
@@ -60,6 +63,7 @@ def test_invalid_build_dir(tmpdir: Path) -> None:
         [site]
         """
     )
+    mkdir("c")
     mkdir("t")
 
     with raises(ConfigError, match="expected a directory: build.build-dir"):
