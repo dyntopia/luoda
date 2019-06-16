@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
+"""
+Plugin that reads markdown files.
+"""
+
 from typing import Any, Optional
 
 from attr import evolve
