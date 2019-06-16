@@ -21,10 +21,14 @@ def test_lglobs(tmpdir: Path) -> None:
     for x in xs:
         (tmpdir / x).touch()
 
-    assert list(lglobs(["*.py"])) == [
-        Path(p) for p in ["foo.py", "bar.py", "qux.py"]
-    ]
+    got = sorted([p.name for p in lglobs(tmpdir, ["*.py"], [])])
+    want = sorted(["foo.py", "bar.py", "qux.py"])
+    assert got == want
 
-    assert list(lglobs(["*.md", "*.rst"])) == [
-        Path(p) for p in ["quux.md", "bar.md", "qux.rst"]
-    ]
+    got = sorted([p.name for p in lglobs(tmpdir, ["*.md", "*.rst"], [])])
+    want = sorted(["quux.md", "bar.md", "qux.rst"])
+    assert got == want
+
+    got = sorted([p.name for p in lglobs(tmpdir, ["*.md", "*rst"], ["b*.md"])])
+    want = sorted(["quux.md", "qux.rst"])
+    assert got == want

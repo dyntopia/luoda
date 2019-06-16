@@ -99,7 +99,7 @@ def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
 
     mds = ["foo.md", "bar.md", "baz.md"]
     for md in mds:
-        (tmpdir / md).touch()
+        (tmpdir / "c" / md).touch()
 
     run = mocker.patch("luoda.pipeline.Pipeline.run")
     build(config)

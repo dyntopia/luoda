@@ -14,8 +14,14 @@ def flatten(iterable: Iterable) -> Iterable:
     return chain.from_iterable(iterable)
 
 
-def lglobs(globs: Iterable[str]) -> Iterable[Path]:
+def lglobs(
+        path: Path,
+        globs: Iterable[str],
+        ignore_globs: Iterable[str],
+) -> Iterable[Path]:
     """
-    Retrieve paths for the elements in `globs`.
+    Retrieve the globs for each element in `globs` sans `ignore_globs`.
     """
-    return flatten([Path(".").glob(g) for g in globs])
+    paths = flatten(path.glob(g) for g in globs)
+    ignore_paths = flatten(path.glob(ig) for ig in ignore_globs)
+    return set(paths).difference(ignore_paths)

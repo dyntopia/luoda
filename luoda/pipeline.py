@@ -67,11 +67,14 @@ def build(config: Path) -> None:
 
     items = []  # type: List[Item]
     for collection in c["collections"]:
-        paths = lglobs(collection["paths"])
-        ignore_paths = lglobs(collection["ignore-paths"])
         template = collection["template"]
+        paths = lglobs(
+            c["build"]["collection-dir"],
+            collection["paths"],
+            collection["ignore-paths"],
+        )
 
-        for path in set(paths).difference(ignore_paths):
+        for path in paths:
             print("building {}".format(path))
             item = Item(path=path, template=template)
             items.append(pipeline.run(item, items=items, config=c))
