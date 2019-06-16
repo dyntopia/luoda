@@ -32,7 +32,9 @@ class Pipeline(PluginBase):
         """
         src = self.make_plugin_source(searchpath=self.searchpath, persist=True)
 
-        diff = set(plugins).difference(src.list_plugins())
+        diff = set(plugins).difference(
+            p for p in src.list_plugins() if not p.startswith("_")
+        )
         if diff:
             unknown = ", ".join(diff)
             raise PipelineError("unknown plugin(s): {}".format(unknown))

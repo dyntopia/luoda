@@ -40,6 +40,24 @@ def test_unknown_plugins(tmpdir: Path) -> None:
         build(config)
 
 
+def test_ignored_plugins(tmpdir: Path) -> None:
+    foo = dedent(
+        """
+        def available():
+            return True
+
+        def run(state):
+            return state
+        """
+    )
+    (tmpdir / "_foo.py").write_text(foo)
+
+    pipeline = Pipeline("abc", ["."])
+
+    with raises(PipelineError, match=r"unknown plugin"):
+        pipeline.load(["_foo"])
+
+
 def test_plugins(tmpdir: Path) -> None:
     foo = dedent(
         """
