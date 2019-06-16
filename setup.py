@@ -24,6 +24,7 @@ setup(
     install_requires=[
         "attrs",
         "click",
+        "jinja2",
         "livereload",
         "pluginbase",
         "toml",
