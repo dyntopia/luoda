@@ -15,7 +15,7 @@ class PipelineError(Exception):
     pass
 
 
-class Pipeline(PluginBase):  # type: ignore
+class Pipeline(PluginBase):
     def __init__(self, package: str, searchpath: Optional[List[str]] = None):
         super().__init__(package=package, searchpath=searchpath)
         self._plugins = []  # type: List
