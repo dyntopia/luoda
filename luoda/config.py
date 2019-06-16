@@ -2,10 +2,11 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
+from pathlib import Path
 from typing import IO, Any, Dict, cast
 
 import toml
-from voluptuous import Invalid, Optional, Required, Schema
+from voluptuous import Coerce, Invalid, Optional, Required, Schema
 
 
 class ConfigError(Exception):
@@ -14,8 +15,8 @@ class ConfigError(Exception):
 
 schema = Schema({
     Required("build"): {
-        Optional("template-dir", default="templates"): str,
-        Optional("build-dir", default="build"): str,
+        Optional("template-dir", default="templates"): Coerce(Path),
+        Optional("build-dir", default="build"): Coerce(Path),
         Optional("highlight", default="default"): str,
         Required("plugins", default=[]): [str],
     },

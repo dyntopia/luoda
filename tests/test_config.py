@@ -41,3 +41,21 @@ def test_invalid_type(tmpfile: IO[str]) -> None:
 
     with raises(ConfigError, match="expected a list: collections"):
         read(tmpfile)
+
+
+def test_invalid_build_dir(tmpfile: IO[str]) -> None:
+    tmpfile.write(
+        """
+        [build]
+        build-dir = 1234
+        [[collections]]
+        template = "foo"
+        name = "bar"
+        paths = []
+        [site]
+        """
+    )
+    tmpfile.seek(0)
+
+    with raises(ConfigError, match="expected Path"):
+        read(tmpfile)
