@@ -4,6 +4,7 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
+from pathlib import Path
 from typing import Callable, Iterator
 
 import click
@@ -13,7 +14,7 @@ from pytest import fixture
 from pytest_mock import MockFixture
 
 from luoda.cli import cli
-from luoda.config import schema
+from luoda.config import ConfigError, read, schema
 
 
 @fixture
@@ -30,7 +31,7 @@ def test_missing_config(invoke: Callable) -> None:
         pass
 
     r = invoke("missing-config")
-    assert r.output.index("Could not open file")
+    assert r.output.index("does not exist")
     assert r.exit_code != 1
 
 
@@ -38,8 +39,12 @@ def test_invalid_config(invoke: Callable) -> None:
     config = {"build": {}, "site": {}}  # type: dict
 
     @cli.command()
-    def invalid_config() -> None:  # pylint: disable=W0612
-        pass
+    @click.pass_context
+    def invalid_config(ctx: click.Context) -> None:  # pylint: disable=W0612
+        try:
+            read(ctx.obj["config"])
+        except ConfigError as e:
+            raise click.ClickException(str(e))
 
     with open("config", "w") as f:
         toml.dump(config, f)
@@ -55,7 +60,7 @@ def test_valid_config(invoke: Callable) -> None:
     @cli.command()
     @click.pass_context
     def valid_config(ctx: click.Context) -> None:  # pylint: disable=W0612
-        assert ctx.obj["config"] == schema(config)
+        assert read(ctx.obj["config"]) == schema(config)
 
     with open("config", "w") as f:
         toml.dump(config, f)
@@ -92,4 +97,4 @@ def test_successful_build(invoke: Callable, mocker: MockFixture) -> None:
 
     build = mocker.patch("luoda.pipeline.build")
     invoke("-c config build")
-    build.assert_called_once_with(schema(config))
+    build.assert_called_once_with(Path("config"))

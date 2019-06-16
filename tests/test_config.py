@@ -4,17 +4,18 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
-from typing import IO
+from pathlib import Path
 
 from pytest import raises
 
 from luoda.config import ConfigError, read
 
-from .fixtures import tmpfile  # pylint: disable=W0611
+from .fixtures import tmpdir  # pylint: disable=W0611
 
 
-def test_missing_required(tmpfile: IO[str]) -> None:
-    tmpfile.write(
+def test_missing_required(tmpdir: Path) -> None:
+    config = tmpdir / "config"
+    config.write_text(
         """
         [site]
         [[collections]]
@@ -23,28 +24,28 @@ def test_missing_required(tmpfile: IO[str]) -> None:
         paths = ["baz"]
         """
     )
-    tmpfile.seek(0)
 
     with raises(ConfigError, match="required key not provided: build"):
-        read(tmpfile)
+        read(config)
 
 
-def test_invalid_type(tmpfile: IO[str]) -> None:
-    tmpfile.write(
+def test_invalid_type(tmpdir: Path) -> None:
+    config = tmpdir / "config"
+    config.write_text(
         """
         [build]
         [collections]
         [site]
         """
     )
-    tmpfile.seek(0)
 
     with raises(ConfigError, match="expected a list: collections"):
-        read(tmpfile)
+        read(config)
 
 
-def test_invalid_build_dir(tmpfile: IO[str]) -> None:
-    tmpfile.write(
+def test_invalid_build_dir(tmpdir: Path) -> None:
+    config = tmpdir / "config"
+    config.write_text(
         """
         [build]
         build-dir = 1234
@@ -55,7 +56,6 @@ def test_invalid_build_dir(tmpfile: IO[str]) -> None:
         [site]
         """
     )
-    tmpfile.seek(0)
 
     with raises(ConfigError, match="expected Path"):
-        read(tmpfile)
+        read(config)

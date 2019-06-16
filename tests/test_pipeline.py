@@ -6,20 +6,19 @@
 
 from pathlib import Path
 from textwrap import dedent
-from typing import IO
 
 from pytest import raises
 from pytest_mock import MockFixture
 
 from luoda import __project__
-from luoda.config import read
 from luoda.pipeline import Pipeline, PipelineError, build
 
-from .fixtures import tmpdir, tmpfile  # pylint: disable=W0611
+from .fixtures import tmpdir  # pylint: disable=W0611
 
 
-def test_unknown_plugins(tmpfile: IO[str]) -> None:
-    tmpfile.write(
+def test_unknown_plugins(tmpdir: Path) -> None:
+    config = tmpdir / "config"
+    config.write_text(
         """
         [build]
         plugins = ["foo", "bar"]
@@ -31,10 +30,9 @@ def test_unknown_plugins(tmpfile: IO[str]) -> None:
         paths = []
         """
     )
-    tmpfile.seek(0)
 
     with raises(PipelineError, match=r"unknown plugin\(s\)"):
-        build(read(tmpfile))
+        build(config)
 
 
 def test_plugins(tmpdir: Path) -> None:
@@ -76,7 +74,8 @@ def test_plugins(tmpdir: Path) -> None:
 
 
 def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
-    content = dedent(
+    config = tmpdir / "config"
+    config.write_text(
         """
         [build]
         plugins = []
@@ -88,14 +87,12 @@ def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
         paths = ["*.md"]
         """
     )
-    config = tmpdir / "config"
-    config.write_text(content)
 
     mds = ["foo.md", "bar.md", "baz.md"]
     for md in mds:
         (tmpdir / md).touch()
 
     run = mocker.patch("luoda.pipeline.Pipeline.run")
-    build(read(config.open()))
+    build(config)
 
     assert run.call_count == len(mds)

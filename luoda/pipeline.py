@@ -4,11 +4,12 @@
 
 from functools import reduce
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Iterable, List, Optional
 
 from pluginbase import PluginBase
 
 from . import __project__
+from .config import read
 from .item import Item
 from .utils import lglobs
 
@@ -59,12 +60,13 @@ class Pipeline(PluginBase):
         )
 
 
-def build(config: Dict[str, Any]) -> None:
+def build(config: Path) -> None:
+    c = read(config)
     pipeline = Pipeline(__project__, [str(Path(__file__).parent / "plugins")])
-    pipeline.load(config["build"]["plugins"])
+    pipeline.load(c["build"]["plugins"])
 
     items = []  # type: List[Item]
-    for collection in config["collections"]:
+    for collection in c["collections"]:
         paths = lglobs(collection["paths"])
         ignore_paths = lglobs(collection["ignore-paths"])
         template = collection["template"]
@@ -72,4 +74,4 @@ def build(config: Dict[str, Any]) -> None:
         for path in set(paths).difference(ignore_paths):
             print("building {}".format(path))
             item = Item(path=path, template=template)
-            items.append(pipeline.run(item, items=items, config=config))
+            items.append(pipeline.run(item, items=items, config=c))

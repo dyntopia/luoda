@@ -4,16 +4,10 @@
 
 from os import chdir, getcwd
 from pathlib import Path
-from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import IO, Iterator
+from tempfile import TemporaryDirectory
+from typing import Iterator
 
 from pytest import fixture
-
-
-@fixture
-def tmpfile() -> Iterator[IO[str]]:
-    with NamedTemporaryFile("w+", buffering=1) as tmp:
-        yield tmp
 
 
 @fixture

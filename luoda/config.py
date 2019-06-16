@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 from pathlib import Path
-from typing import IO, Any, Dict, cast
+from typing import Any, Dict, cast
 
 import toml
 from voluptuous import Coerce, Invalid, Optional, Required, Schema
@@ -32,13 +32,13 @@ schema = Schema({
 })
 
 
-def read(f: IO[str]) -> Dict[str, Any]:
+def read(path: Path) -> Dict[str, Any]:
     """
     Read and validate a TOML configuration.
     """
     try:
-        return cast(Dict[str, Any], schema(toml.load(f)))
+        return cast(Dict[str, Any], schema(toml.load(path)))
     except Invalid as e:
         msg = e.error_message
-        path = ".".join((str(p) for p in e.path))
-        raise ConfigError("{}: {}".format(msg, path))
+        paths = ".".join(str(p) for p in e.path)
+        raise ConfigError("{}: {}".format(msg, paths))
