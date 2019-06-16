@@ -75,8 +75,8 @@ def test_plugins(tmpdir: Path) -> None:
     assert pipeline.run(2) == 11
 
 
-def test_unknown_run(tmpfile: IO[str], mocker: MockFixture) -> None:
-    tmpfile.write(
+def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
+    content = dedent(
         """
         [build]
         plugins = []
@@ -85,11 +85,17 @@ def test_unknown_run(tmpfile: IO[str], mocker: MockFixture) -> None:
         [[collections]]
         name = "abc"
         template = "xyz"
-        paths = []
+        paths = ["*.md"]
         """
     )
-    tmpfile.seek(0)
+    config = tmpdir / "config"
+    config.write_text(content)
+
+    mds = ["foo.md", "bar.md", "baz.md"]
+    for md in mds:
+        (tmpdir / md).touch()
 
     run = mocker.patch("luoda.pipeline.Pipeline.run")
-    build(read(tmpfile))
-    assert run.call_count == 1
+    build(read(config.open()))
+
+    assert run.call_count == len(mds)

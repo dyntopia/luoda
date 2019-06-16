@@ -9,6 +9,8 @@ from typing import Any, Dict, Iterable, List, Optional
 from pluginbase import PluginBase
 
 from . import __project__
+from .item import Item
+from .utils import lglobs
 
 
 class PipelineError(Exception):
@@ -60,4 +62,14 @@ class Pipeline(PluginBase):
 def build(config: Dict[str, Any]) -> None:
     pipeline = Pipeline(__project__, [str(Path(__file__).parent / "plugins")])
     pipeline.load(config["build"]["plugins"])
-    pipeline.run(1234)
+
+    items = []  # type: List[Item]
+    for collection in config["collections"]:
+        paths = lglobs(collection["paths"])
+        ignore_paths = lglobs(collection["ignore-paths"])
+        template = collection["template"]
+
+        for path in set(paths).difference(ignore_paths):
+            print("building {}".format(path))
+            item = Item(path=path, template=template)
+            items.append(pipeline.run(item, items=items, config=config))
