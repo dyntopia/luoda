@@ -4,6 +4,7 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
+from os import mkdir
 from pathlib import Path
 
 from pytest import raises
@@ -34,10 +35,12 @@ def test_invalid_type(tmpdir: Path) -> None:
     config.write_text(
         """
         [build]
+        template-dir = "t"
         [collections]
         [site]
         """
     )
+    mkdir("t")
 
     with raises(ConfigError, match="expected a list: collections"):
         read(config)
@@ -48,6 +51,7 @@ def test_invalid_build_dir(tmpdir: Path) -> None:
     config.write_text(
         """
         [build]
+        template-dir = "t"
         build-dir = 1234
         [[collections]]
         template = "foo"
@@ -56,6 +60,7 @@ def test_invalid_build_dir(tmpdir: Path) -> None:
         [site]
         """
     )
+    mkdir("t")
 
-    with raises(ConfigError, match="expected Path"):
+    with raises(ConfigError, match="expected a directory: build.build-dir"):
         read(config)

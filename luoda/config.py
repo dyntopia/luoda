@@ -6,18 +6,21 @@ from pathlib import Path
 from typing import Any, Dict, cast
 
 import toml
-from voluptuous import Coerce, Invalid, Optional, Required, Schema
+from voluptuous import All, Coerce, Invalid, IsDir, Required, Schema
 
 
 class ConfigError(Exception):
     pass
 
 
+Dir = Coerce(Path, "expected a directory")
+ExistingDir = All(IsDir(None), Dir)
+
 schema = Schema({
     Required("build"): {
-        Optional("template-dir", default="templates"): Coerce(Path),
-        Optional("build-dir", default="build"): Coerce(Path),
-        Optional("highlight", default="default"): str,
+        Required("build-dir", default="build"): Dir,
+        Required("template-dir", default="templates"): ExistingDir,
+        Required("highlight", default="default"): str,
         Required("plugins", default=[]): [str],
     },
     Required("site"): {
@@ -27,7 +30,7 @@ schema = Schema({
         Required("name"): str,
         Required("template"): str,
         Required("paths"): [str],
-        Optional("ignore-paths", default=[]): [str],
+        Required("ignore-paths", default=[]): [str],
     }],
 })
 

@@ -4,6 +4,7 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
+from os import mkdir
 from pathlib import Path
 from typing import Callable, Iterator
 
@@ -36,7 +37,13 @@ def test_missing_config(invoke: Callable) -> None:
 
 
 def test_invalid_config(invoke: Callable) -> None:
-    config = {"build": {}, "site": {}}  # type: dict
+    config = {
+        "build": {
+            "template-dir": "t",
+        },
+        "site": {},
+    }  # type: dict
+    mkdir("t")
 
     @cli.command()
     @click.pass_context
@@ -55,7 +62,14 @@ def test_invalid_config(invoke: Callable) -> None:
 
 
 def test_valid_config(invoke: Callable) -> None:
-    config = {"build": {}, "site": {}, "collections": []}  # type: dict
+    config = {
+        "build": {
+            "template-dir": "t",
+        },
+        "site": {},
+        "collections": []
+    }  # type: dict
+    mkdir("t")
 
     @cli.command()
     @click.pass_context
@@ -75,11 +89,13 @@ def test_valid_config(invoke: Callable) -> None:
 def test_failed_build(invoke: Callable) -> None:
     config = {
         "build": {
-            "plugins": ["foo"]
+            "template-dir": "t",
+            "plugins": ["foo"],
         },
         "site": {},
         "collections": [],
     }  # type: dict
+    mkdir("t")
 
     with open("config", "w") as f:
         toml.dump(config, f)

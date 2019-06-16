@@ -4,6 +4,7 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
+from os import mkdir
 from pathlib import Path
 from textwrap import dedent
 
@@ -21,6 +22,7 @@ def test_unknown_plugins(tmpdir: Path) -> None:
     config.write_text(
         """
         [build]
+        template-dir = "t"
         plugins = ["foo", "bar"]
         [site]
         name = "m00"
@@ -30,6 +32,7 @@ def test_unknown_plugins(tmpdir: Path) -> None:
         paths = []
         """
     )
+    mkdir("t")
 
     with raises(PipelineError, match=r"unknown plugin\(s\)"):
         build(config)
@@ -78,6 +81,7 @@ def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
     config.write_text(
         """
         [build]
+        template-dir = "t"
         plugins = []
         [site]
         name = "m00"
@@ -87,6 +91,7 @@ def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
         paths = ["*.md"]
         """
     )
+    mkdir("t")
 
     mds = ["foo.md", "bar.md", "baz.md"]
     for md in mds:
