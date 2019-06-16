@@ -1,0 +1,7 @@
+[run]
+branch = true
+source = luoda
+omit = luoda/__main__.py
+
+[report]
+fail_under = 100
