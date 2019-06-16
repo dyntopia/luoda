@@ -6,6 +6,7 @@
 Plugin that prints the current state.
 """
 
+from pprint import pformat
 from typing import Any
 
 
@@ -14,5 +15,6 @@ def available() -> bool:
 
 
 def run(state: Any, *args: Any, **kwargs: Any) -> Any:
-    print("state: {}, args: {}, kwargs: {}".format(state, args, kwargs))
+    pp = [pformat(x) for x in [state, args, kwargs]]
+    print("{}\n - state: {}\n - args: {}\n - kwargs: {}".format("-" * 24, *pp))
     return state
