@@ -39,7 +39,7 @@ def test_run_relative(tmpdir: Path) -> None:
     for src, _ in files:
         path = Path(src)
         item = Item(path=path, content=src)
-        run(item, config=config)
+        assert isinstance(run(item, config=config), Item)
 
     for src, dst in files:
         assert (tmpdir / dst).read_text() == src
@@ -67,7 +67,7 @@ def test_run_absolute(tmpdir: Path) -> None:
 
     for src, _ in files:
         item = Item(path=src, content=str(src))
-        run(item, config=config)
+        assert isinstance(run(item, config=config), Item)
 
     for src, dst in files:
         assert (tmpdir / dst).read_text() == str(src)

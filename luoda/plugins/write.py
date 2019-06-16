@@ -29,3 +29,4 @@ def run(item: Any, config: Dict[str, Any], **_kwargs: Any) -> Any:
 
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text(item.content)
+    return item
