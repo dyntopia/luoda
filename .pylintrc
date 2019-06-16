@@ -44,6 +44,9 @@ disable=
 [VARIABLES]
 init-import=yes
 
+[TYPECHECK]
+ignored-classes=_CountingAttr
+
 [BASIC]
 good-names=f,i,j,k,m,db,ex,_
 argument-naming-style=snake_case

@@ -22,6 +22,7 @@ setup(
         "luoda.plugins",
     ],
     install_requires=[
+        "attrs",
         "click",
         "livereload",
         "pluginbase",
