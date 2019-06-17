@@ -1,3 +1,6 @@
+![Build](https://img.shields.io/travis/dyntopia/luoda.svg)
+![Coverage](https://img.shields.io/codecov/c/github/dyntopia/luoda.svg)
+
 luoda
 =====
 
