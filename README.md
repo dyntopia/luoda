@@ -11,14 +11,15 @@ About
 following plugins:
 
 - `org` - Reads org-mode files with `emacs` if it's installed.  Code
-  blocks are highlighted with pygments [5].
-- `markdown` - Reads markdown files with mistune [1].  Code blocks are
-  highlighted with pygments [5].
+  blocks are highlighted with [pygments][5].
+- `markdown` - Reads markdown files with [mistune][1].  Code blocks are
+  highlighted with [pygments][5].
 - `static` - Reads files as-is.
 - `metadata` - Retrieves `author` and `date` from git repositories with
-  dulwich [2].  It also sets `mtime`.
-- `render` - Renders parsed content with the jinja2 [3] template engine.
-- `minimize` - Minimize rendered HTML content with htmlmin [4].
+  [dulwich][2].  It also sets `mtime`.
+- `render` - Renders parsed content with the [jinja2][3] template
+  engine.
+- `minimize` - Minimize rendered HTML content with [htmlmin][4].
 - `write` - Writes content to disk.
 - `tap` - Helper that prints the current state.
 
@@ -53,6 +54,7 @@ build-dir = "build"
 plugins = [
     "metadata",
     "markdown",
+    "org",
     "static",
     "render",
     "minimize",
@@ -60,7 +62,7 @@ plugins = [
 ]
 
 [site]
-# Optional: name if the site
+# Optional: name of the site
 name = "luoda"
 
 [[collection]]
