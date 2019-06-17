@@ -21,8 +21,12 @@ setup(
         "luoda",
         "luoda.plugins",
     ],
+    package_data={
+        "luoda": ["data/*.el"],
+    },
     install_requires=[
         "attrs",
+        "beautifulsoup4",
         "click",
         "dulwich",
         "htmlmin",
@@ -30,6 +34,7 @@ setup(
         "livereload",
         "pluginbase",
         "pygments",
+        "setuptools",
         "toml",
         "voluptuous",
     ],

@@ -7,6 +7,8 @@ About
 `luoda` is a plugin-based static site generator.  It ships with the
 following plugins:
 
+- `org` - Reads org-mode files with `emacs` if it's installed.  Code
+  blocks are highlighted with pygments [5].
 - `markdown` - Reads markdown files with mistune [1].  Code blocks are
   highlighted with pygments [5].
 - `metadata` - Retrieves `author` and `date` from git repositories with
