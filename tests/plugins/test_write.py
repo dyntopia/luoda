@@ -71,3 +71,29 @@ def test_run_absolute(tmpdir: Path) -> None:
 
     for src, dst in files:
         assert (tmpdir / dst).read_text() == str(src)
+
+
+def test_run_bytes(tmpdir: Path) -> None:
+    files = [
+        ("src/index.png", "dst/index.png"),
+        ("src/bar/baz.svg", "dst/bar/baz.svg"),
+        ("src/abc/def/m00.css", "dst/abc/def/m00.css"),
+    ]
+
+    config = {
+        "build": {
+            "build-dir": Path("dst"),
+            "collection-dir": Path("src"),
+        }
+    }
+
+    config["build"]["build-dir"].mkdir(parents=True)
+    config["build"]["collection-dir"].mkdir(parents=True)
+
+    for src, _ in files:
+        path = Path(src)
+        item = Item(path=path, content=src.encode())
+        assert isinstance(run(item, config=config), Item)
+
+    for src, dst in files:
+        assert (tmpdir / dst).read_bytes().decode() == src
