@@ -45,7 +45,6 @@ def test_invalid_config(invoke: Callable) -> None:
         "site": {},
     }  # type: dict
 
-    mkdir("c")
     mkdir("t")
 
     @cli.command()
@@ -60,7 +59,7 @@ def test_invalid_config(invoke: Callable) -> None:
         toml.dump(config, f)
 
     r = invoke("--config-file config invalid-config")
-    assert r.output.index("required key not provided: collections")
+    assert r.output.index("not a directory")
     assert r.exit_code != 0
 
 

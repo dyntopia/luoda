@@ -14,7 +14,7 @@ from luoda.config import ConfigError, read
 from .fixtures import tmpdir  # pylint: disable=W0611
 
 
-def test_missing_required(tmpdir: Path) -> None:
+def test_missing_build(tmpdir: Path) -> None:
     config = tmpdir / "config"
     config.write_text(
         """
@@ -25,9 +25,12 @@ def test_missing_required(tmpdir: Path) -> None:
         paths = ["baz"]
         """
     )
+    mkdir("collections")
+    mkdir("templates")
 
-    with raises(ConfigError, match="required key not provided: build"):
-        read(config)
+    res = read(config)
+    keys = len(res["build"].keys())
+    assert keys > 0
 
 
 def test_invalid_type(tmpdir: Path) -> None:

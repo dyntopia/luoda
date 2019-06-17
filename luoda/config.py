@@ -19,17 +19,17 @@ ExistingDir = All(IsDir(None), Dir)
 Highlight = Coerce(get_style_by_name, "expected a pygments style")
 
 schema = Schema({
-    Required("build"): {
+    Required("build", default={}): {
         Required("build-dir", default="build"): Dir,
         Required("collection-dir", default="collections"): ExistingDir,
         Required("template-dir", default="templates"): ExistingDir,
         Required("highlight", default="default"): Highlight,
         Required("plugins", default=[]): [str],
     },
-    Required("site"): {
+    Required("site", default={}): {
         Required("name", default="luoda"): str,
     },
-    Required("collections"): [{
+    Required("collections", default=[]): [{  # yapf: ignore
         Required("name"): str,
         Required("template", default=""): str,
         Required("paths"): [str],
