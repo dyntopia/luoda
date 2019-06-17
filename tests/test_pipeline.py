@@ -123,3 +123,29 @@ def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
     build(config)
 
     assert run.call_count == len(mds)
+
+
+def test_cleanup(tmpdir: Path, mocker: MockFixture) -> None:
+    config = tmpdir / "config"
+    config.write_text(
+        """
+        [build]
+        build-dir = "b"
+        collection-dir = "c"
+        template-dir = "t"
+        plugins = []
+        [site]
+        name = "m00"
+        [[collections]]
+        name = "abc"
+        template = "xyz"
+        paths = ["*.md"]
+        """
+    )
+    mkdir("b")
+    mkdir("c")
+    mkdir("t")
+
+    rmtree = mocker.patch("luoda.pipeline.rmtree")
+    build(config)
+    rmtree.assert_called_once_with("b")

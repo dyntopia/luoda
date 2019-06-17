@@ -4,6 +4,7 @@
 
 from functools import reduce
 from pathlib import Path
+from shutil import rmtree
 from typing import Any, Iterable, List, Optional
 
 from pluginbase import PluginBase
@@ -66,6 +67,11 @@ def build(config: Path) -> None:
     c = read(config)
     pipeline = Pipeline(__project__, [str(Path(__file__).parent / "plugins")])
     pipeline.load(c["build"]["plugins"])
+
+    try:
+        rmtree(str(c["build"]["build-dir"]))
+    except FileNotFoundError:
+        pass
 
     items = []  # type: List[Item]
     for collection in c["collections"]:
