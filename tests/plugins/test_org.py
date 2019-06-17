@@ -108,9 +108,7 @@ def test_run_without_options(tmpdir: Path) -> None:
     (tmpdir / "xyz.org").write_text(org)
     item = run(Item(path=tmpdir / "xyz.org"))
 
-    # org-html--build-meta-info sets the title to an invisible character
-    # to avoid invalid titles.
-    assert item.title == "\u200e"
+    assert item.title == ""
     assert item.author == ""
     assert item.date == 0.0
     assert item.content.count("first") == 1

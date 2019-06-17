@@ -1,7 +1,6 @@
 ;;; luoda-org-export.el --- exporter -*- lexical-binding: t; -*-
 
 (require 'ox-html)
-(require 'subr-x)
 
 (setq org-export-time-stamp-file nil
       org-export-with-toc nil
@@ -14,12 +13,13 @@
       org-html-xml-declaration nil)
 
 (defun luoda-org-export (_switch)
-  (when-let ((filename (pop command-line-args-left))
-             (user-full-name ""))
-    (with-temp-buffer
-      (insert-file-contents-literally filename)
-      (org-html-export-as-html)
-      (princ (format "%s" (buffer-string)))))
+  (let ((filename (pop command-line-args-left))
+        (user-full-name ""))
+    (when filename
+      (with-temp-buffer
+        (insert-file-contents-literally filename)
+        (org-html-export-as-html)
+        (princ (format "%s" (buffer-string))))))
   (kill-emacs))
 
 (add-to-list 'command-switch-alist '("--luoda-org-export" . luoda-org-export))

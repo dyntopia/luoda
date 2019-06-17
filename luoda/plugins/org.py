@@ -33,6 +33,7 @@ def run(item: Any, **_kwargs: Any) -> Any:
             "emacs",
             "--batch",
             "--quick",
+            "--no-window-system",
             "--load",
             str(el),
             "--luoda-org-export",
@@ -49,6 +50,12 @@ def run(item: Any, **_kwargs: Any) -> Any:
         content = soup.select_one("div#content")
         date = soup.select_one("p.date")
         title = soup.select_one("title")
+        # `org-html--build-meta-info' uses bogus titles to avoid invalid
+        # elements.
+        bogus = [
+            " *temp*",  # emacs24
+            "\u200e",  # emacs26
+        ]
 
         for src in soup.select("pre.src"):
             lang = [
@@ -64,7 +71,7 @@ def run(item: Any, **_kwargs: Any) -> Any:
             content=str(content) if content else "",
             author=author.get("content") if author else "",
             date=parse_date(date.text.split()[-1]) if date else 0.0,
-            title=title.text if title else "",
+            title=title.text if title and title.text not in bogus else "",
         )
     return item
 
