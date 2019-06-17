@@ -7,7 +7,8 @@ About
 `luoda` is a plugin-based static site generator.  It ships with the
 following plugins:
 
-- `markdown` - Reads markdown files with mistune [1]
+- `markdown` - Reads markdown files with mistune [1].  Code blocks are
+  highlighted with pygments [5].
 - `metadata` - Retrieves `author` and `date` from git repositories with
   dulwich [2].  It also sets `mtime`.
 - `render` - Renders parsed content with the jinja2 [3] template engine.
@@ -87,3 +88,4 @@ paths = ["blog/index.md"]
 [2]: https://pypi.org/project/dulwich/
 [3]: https://pypi.org/project/jinja2/
 [4]: https://pypi.org/project/htmlmin/
+[5]: https://pypi.org/project/pygments/

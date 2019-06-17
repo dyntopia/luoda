@@ -1,11 +1,16 @@
+# pylint: disable=W0621
+#
 # Copyright (c) 2019, Hans Jerry Illikainen <hji@dyntopia.com>
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
 from pathlib import Path
+from textwrap import dedent
 
 from luoda.item import Item
 from luoda.plugins.markdown import available, run
+
+from ..fixtures import tmpdir  # pylint: disable=W0611
 
 
 def test_available() -> None:
@@ -39,3 +44,35 @@ def test_title() -> None:
     assert res.content.index("second")
     assert res.title == "first"
     assert res != item
+
+
+def test_code(tmpdir: Path) -> None:
+    item = Item(path=tmpdir / "code.md")
+    md = dedent(
+        """
+        # abcd
+
+        ```python
+        print("m00")
+        ```
+
+        ```c
+        exit(EXIT_SUCCESS);
+        ```
+
+        ```
+        asdf
+        ```
+
+        ```foobarbazqux
+        hmm
+        ```
+        """
+    )
+    item.path.write_text(md)
+
+    content = run(item).content
+    assert content.count("highlight") == 2
+    assert content.count("abcd") == 1
+    assert content.count("exit") == 1
+    assert content.count("hmm") == 1

@@ -6,19 +6,26 @@
 Plugin that reads markdown files.
 """
 
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from attr import evolve
 from mistune import Markdown, Renderer
+
+from ._utils import colorize
 
 
 class Render(Renderer):
     title = ""
 
-    def header(self, text: str, level: int, raw: Optional[str] = None) -> Any:
+    def header(self, text: str, level: int, raw: Optional[str] = None) -> str:
         if level == 1:
             self.title = text
-        return super().header(text, level, raw)
+        return cast(str, super().header(text, level, raw))
+
+    def block_code(self, code: str, lang: Optional[str] = None) -> str:
+        if lang:
+            return colorize(code, lang)
+        return cast(str, super().block_code(code, lang))
 
 
 def available() -> bool:

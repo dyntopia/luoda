@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, cast
 
 import toml
+from pygments.styles import get_style_by_name
 from voluptuous import All, Coerce, Invalid, IsDir, Required, Schema
 
 
@@ -15,13 +16,14 @@ class ConfigError(Exception):
 
 Dir = Coerce(Path, "expected a directory")
 ExistingDir = All(IsDir(None), Dir)
+Highlight = Coerce(get_style_by_name, "expected a pygments style")
 
 schema = Schema({
     Required("build"): {
         Required("build-dir", default="build"): Dir,
         Required("collection-dir", default="collections"): ExistingDir,
         Required("template-dir", default="templates"): ExistingDir,
-        Required("highlight", default="default"): str,
+        Required("highlight", default="default"): Highlight,
         Required("plugins", default=[]): [str],
     },
     Required("site"): {

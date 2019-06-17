@@ -29,6 +29,7 @@ setup(
         "jinja2",
         "livereload",
         "pluginbase",
+        "pygments",
         "toml",
         "voluptuous",
     ],
