@@ -24,6 +24,7 @@ setup(
     install_requires=[
         "attrs",
         "click",
+        "dulwich",
         "jinja2",
         "livereload",
         "pluginbase",
