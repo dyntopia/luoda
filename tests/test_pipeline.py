@@ -125,6 +125,29 @@ def test_unknown_run(tmpdir: Path, mocker: MockFixture) -> None:
     assert run.call_count == len(mds)
 
 
+def test_invalid_glob(tmpdir: Path) -> None:
+    config = tmpdir / "config"
+    config.write_text(
+        """
+        [build]
+        collection-dir = "c"
+        template-dir = "t"
+        plugins = []
+        [site]
+        name = "m00"
+        [[collections]]
+        name = "abc"
+        template = "xyz"
+        paths = ["**.md"]
+        """
+    )
+    mkdir("c")
+    mkdir("t")
+
+    with raises(PipelineError, match="Invalid pattern"):
+        build(config)
+
+
 def test_cleanup(tmpdir: Path, mocker: MockFixture) -> None:
     config = tmpdir / "config"
     config.write_text(

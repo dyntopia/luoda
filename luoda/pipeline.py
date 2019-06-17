@@ -76,11 +76,14 @@ def build(config: Path) -> None:
     items = []  # type: List[Item]
     for collection in c["collections"]:
         template = collection["template"]
-        paths = lglobs(
-            c["build"]["collection-dir"],
-            collection["paths"],
-            collection["ignore-paths"],
-        )
+        try:
+            paths = lglobs(
+                c["build"]["collection-dir"],
+                collection["paths"],
+                collection["ignore-paths"],
+            )
+        except ValueError as e:
+            raise PipelineError(e)
 
         for path in paths:
             print("building {}".format(path))
