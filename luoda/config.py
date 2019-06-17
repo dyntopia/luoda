@@ -7,7 +7,15 @@ from typing import Any, Dict, cast
 
 import toml
 from pygments.styles import get_style_by_name
-from voluptuous import All, Coerce, Invalid, IsDir, Required, Schema
+from voluptuous import (
+    ALLOW_EXTRA,
+    All,
+    Coerce,
+    Invalid,
+    IsDir,
+    Required,
+    Schema,
+)
 
 
 class ConfigError(Exception):
@@ -26,16 +34,15 @@ schema = Schema({
         Required("highlight", default="default"): Highlight,
         Required("plugins", default=[]): [str],
     },
-    Required("site", default={}): {
-        Required("name", default="luoda"): str,
-    },
     Required("collections", default=[]): [{  # yapf: ignore
         Required("name"): str,
         Required("template", default=""): str,
         Required("paths"): [str],
         Required("ignore-paths", default=[]): [str],
     }],
-})
+    Required("extra", default={}): {
+    },
+}, extra=ALLOW_EXTRA)
 
 
 def read(path: Path) -> Dict[str, Any]:

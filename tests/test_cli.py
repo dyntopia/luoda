@@ -42,7 +42,6 @@ def test_invalid_config(invoke: Callable) -> None:
             "collection-dir": "c",
             "template-dir": "t",
         },
-        "site": {},
     }  # type: dict
 
     mkdir("t")
@@ -69,7 +68,7 @@ def test_valid_config(invoke: Callable) -> None:
             "collection-dir": "c",
             "template-dir": "t",
         },
-        "site": {},
+        "extra": {},
         "collections": []
     }  # type: dict
 
@@ -98,7 +97,7 @@ def test_failed_build(invoke: Callable) -> None:
             "template-dir": "t",
             "plugins": ["foo"],
         },
-        "site": {},
+        "extra": {},
         "collections": [],
     }  # type: dict
 

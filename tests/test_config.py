@@ -18,7 +18,6 @@ def test_missing_build(tmpdir: Path) -> None:
     config = tmpdir / "config"
     config.write_text(
         """
-        [site]
         [[collections]]
         name = "foo"
         template = "bar"
@@ -41,7 +40,6 @@ def test_invalid_type(tmpdir: Path) -> None:
         collection-dir = "c"
         template-dir = "t"
         [collections]
-        [site]
         """
     )
     mkdir("c")
@@ -63,7 +61,6 @@ def test_invalid_build_dir(tmpdir: Path) -> None:
         template = "foo"
         name = "bar"
         paths = []
-        [site]
         """
     )
     mkdir("c")
@@ -71,3 +68,24 @@ def test_invalid_build_dir(tmpdir: Path) -> None:
 
     with raises(ConfigError, match="expected a directory: build.build-dir"):
         read(config)
+
+
+def test_extra(tmpdir: Path) -> None:
+    config = tmpdir / "config"
+    config.write_text(
+        """
+        [build]
+        collection-dir = "c"
+        template-dir = "t"
+
+        [extra]
+        abc = 123
+        xyz = "foo"
+        """
+    )
+    mkdir("c")
+    mkdir("t")
+
+    res = read(config)
+    assert res["extra"]["abc"] == 123
+    assert res["extra"]["xyz"] == "foo"

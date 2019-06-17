@@ -61,10 +61,6 @@ plugins = [
     "write"
 ]
 
-[site]
-# Optional: name of the site
-name = "luoda"
-
 [[collection]]
 # Required: name of the collection
 name = "blog-posts"
@@ -93,6 +89,9 @@ template = "list.html"
 # collection-dir
 paths = ["blog/index.md"]
 ```
+
+Note that arbitrary `key=value` pairs may also be specified for
+consumption by the templates.
 
 
 [1]: https://pypi.org/project/mistune/
