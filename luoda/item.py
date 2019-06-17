@@ -11,9 +11,9 @@ from attr import attrib, attrs
 class Item:
     author = attrib(type=str, default="")
     content = attrib(type=str, default="")
-    date = attrib(type=str, default="")
+    date = attrib(type=float, default=0.0)
     keywords = attrib(type=str, default="")
-    mtime = attrib(type=str, default="")
+    mtime = attrib(type=float, default=0.0)
     path = attrib(type=Path)
     template = attrib(type=str, default="")
     title = attrib(type=str, default="")
