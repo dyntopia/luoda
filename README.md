@@ -11,6 +11,7 @@ following plugins:
 - `metadata` - Retrieves `author` and `date` from git repositories with
   dulwich [2].  It also sets `mtime`.
 - `render` - Renders parsed content with the jinja2 [3] template engine.
+- `minimize` - Minimize rendered HTML content with htmlmin [4].
 - `write` - Writes content to disk.
 - `tap` - Helper that prints the current state.
 
@@ -46,6 +47,7 @@ plugins = [
     "metadata",
     "markdown",
     "render",
+    "minimize",
     "write"
 ]
 
@@ -84,3 +86,4 @@ paths = ["blog/index.md"]
 [1]: https://pypi.org/project/mistune/
 [2]: https://pypi.org/project/dulwich/
 [3]: https://pypi.org/project/jinja2/
+[4]: https://pypi.org/project/htmlmin/

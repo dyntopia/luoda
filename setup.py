@@ -25,6 +25,7 @@ setup(
         "attrs",
         "click",
         "dulwich",
+        "htmlmin",
         "jinja2",
         "livereload",
         "pluginbase",
