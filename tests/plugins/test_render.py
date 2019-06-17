@@ -44,6 +44,13 @@ def test_render(tmpdir: Path) -> None:
     assert new_item != item
 
 
+def test_no_template(tmpdir: Path) -> None:
+    item = Item(content="abc", path=tmpdir / "foo")
+    config = {"build": {"template-dir": "."}}
+
+    assert run(item, items=[], config=config) == item
+
+
 def test_template_not_found(tmpdir: Path) -> None:
     item = Item(content="abc", path=tmpdir / "foo", template="template")
     config = {"build": {"template-dir": "."}}

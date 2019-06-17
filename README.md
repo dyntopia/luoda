@@ -62,7 +62,7 @@ name = "luoda"
 # Required: name of the collection
 name = "blog-posts"
 
-# Required: name of the template to use
+# Optional: name of the template to use
 template = "post.html"
 
 # Required: list of globs to include for this collection, relative to
@@ -77,7 +77,7 @@ ignore-paths = ["blog/index.md"]
 # Required: name of the collection
 name = "blog-index"
 
-# Required: name of the template to use
+# Optional: name of the template to use
 template = "list.html"
 
 # Required: list of globs to include for this collection, relative to

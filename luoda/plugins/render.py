@@ -25,17 +25,18 @@ def available() -> bool:
 
 
 def run(item: Any, items: List[Any], config: Dict[str, Any]) -> Any:
-    autoescape = select_autoescape()
-    loader = FileSystemLoader(str(config["build"]["template-dir"]))
-    env = Sandbox(autoescape=autoescape, loader=loader)
-    env.filters["strftime"] = _strftime
+    if item.template:
+        autoescape = select_autoescape()
+        loader = FileSystemLoader(str(config["build"]["template-dir"]))
+        env = Sandbox(autoescape=autoescape, loader=loader)
+        env.filters["strftime"] = _strftime
 
-    try:
-        template = env.get_template(item.template)
-        content = template.render(item=item, items=items, **config)
-        return evolve(item, content=content)
-    except TemplateError as e:
-        print("ERROR: {}: {}".format(repr(e), e))
+        try:
+            template = env.get_template(item.template)
+            content = template.render(item=item, items=items, **config)
+            return evolve(item, content=content)
+        except TemplateError as e:
+            print("ERROR: {}: {}".format(repr(e), e))
     return item
 
 

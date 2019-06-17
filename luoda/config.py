@@ -31,7 +31,7 @@ schema = Schema({
     },
     Required("collections"): [{
         Required("name"): str,
-        Required("template"): str,
+        Required("template", default=""): str,
         Required("paths"): [str],
         Required("ignore-paths", default=[]): [str],
     }],
