@@ -11,6 +11,7 @@ following plugins:
   blocks are highlighted with pygments [5].
 - `markdown` - Reads markdown files with mistune [1].  Code blocks are
   highlighted with pygments [5].
+- `static` - Reads files as-is.
 - `metadata` - Retrieves `author` and `date` from git repositories with
   dulwich [2].  It also sets `mtime`.
 - `render` - Renders parsed content with the jinja2 [3] template engine.
@@ -49,6 +50,7 @@ build-dir = "build"
 plugins = [
     "metadata",
     "markdown",
+    "static",
     "render",
     "minimize",
     "write"
@@ -62,7 +64,8 @@ name = "luoda"
 # Required: name of the collection
 name = "blog-posts"
 
-# Optional: name of the template to use
+# Optional: name of the template to use.  Files are read as-is if no
+# template is provided and if the `static` module is enabled.
 template = "post.html"
 
 # Required: list of globs to include for this collection, relative to
@@ -77,7 +80,8 @@ ignore-paths = ["blog/index.md"]
 # Required: name of the collection
 name = "blog-index"
 
-# Optional: name of the template to use
+# Optional: name of the template to use.  Files are read as-is if no
+# template is provided and if the `static` module is enabled.
 template = "list.html"
 
 # Required: list of globs to include for this collection, relative to
