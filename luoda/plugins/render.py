@@ -6,7 +6,8 @@
 Plugin that renders content with jinja2.
 """
 
-from typing import Any, Dict, List
+from datetime import date
+from typing import Any, Dict, List, Union
 
 from attr import evolve
 from jinja2 import FileSystemLoader, select_autoescape
@@ -27,6 +28,7 @@ def run(item: Any, items: List[Any], config: Dict[str, Any]) -> Any:
     autoescape = select_autoescape()
     loader = FileSystemLoader(str(config["build"]["template-dir"]))
     env = Sandbox(autoescape=autoescape, loader=loader)
+    env.filters["strftime"] = _strftime
 
     try:
         template = env.get_template(item.template)
@@ -35,3 +37,9 @@ def run(item: Any, items: List[Any], config: Dict[str, Any]) -> Any:
     except TemplateError as e:
         print("ERROR: {}: {}".format(repr(e), e))
     return item
+
+
+def _strftime(timestamp: Union[int, float], fmt: str = "%Y-%m-%d") -> str:
+    if not isinstance(timestamp, (int, float)) or not isinstance(fmt, str):
+        raise TemplateError("invalid strftime() invocation")
+    return date.fromtimestamp(timestamp).strftime(fmt)

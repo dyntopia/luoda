@@ -4,14 +4,16 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
+from datetime import date
 from pathlib import Path
+from time import time
 
 from jinja2 import FileSystemLoader
-from jinja2.exceptions import SecurityError
+from jinja2.exceptions import SecurityError, TemplateError
 from pytest import raises
 
 from luoda.item import Item
-from luoda.plugins.render import Sandbox, available, run
+from luoda.plugins.render import Sandbox, _strftime, available, run
 
 from ..fixtures import tmpdir  # pylint: disable=W0611
 
@@ -47,3 +49,17 @@ def test_template_not_found(tmpdir: Path) -> None:
     config = {"build": {"template-dir": "."}}
 
     assert run(item, items=[], config=config) == item
+
+
+def test_strftime() -> None:
+    with raises(TemplateError):
+        _strftime("0")  # type: ignore
+
+    with raises(TemplateError):
+        _strftime({})  # type: ignore
+
+    with raises(TemplateError):
+        _strftime(0, {})  # type: ignore
+
+    ts = time()
+    assert _strftime(ts, "%Y") == str(date.fromtimestamp(ts).year)
