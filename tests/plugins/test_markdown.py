@@ -24,8 +24,8 @@ def test_not_markdown() -> None:
     assert run(item) == item
 
 
-def test_no_title() -> None:
-    path = Path("foo.md")
+def test_no_title(tmpdir: Path) -> None:
+    path = tmpdir / "foo.md"
     path.write_text("## second")
     item = Item(path=path)
 
@@ -34,8 +34,8 @@ def test_no_title() -> None:
     assert res != item
 
 
-def test_title() -> None:
-    path = Path("foo.md")
+def test_title(tmpdir: Path) -> None:
+    path = tmpdir / "foo.md"
     path.write_text("#  first \n ## second")
     item = Item(path=path)
 
