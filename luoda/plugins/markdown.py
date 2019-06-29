@@ -20,6 +20,7 @@ class Render(Renderer):
     def header(self, text: str, level: int, raw: Optional[str] = None) -> str:
         if level == 1:
             self.title = text
+            return ""
         return cast(str, super().header(text, level, raw))
 
     def block_code(self, code: str, lang: Optional[str] = None) -> str:

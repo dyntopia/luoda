@@ -40,8 +40,8 @@ def test_title(tmpdir: Path) -> None:
     item = Item(path=path)
 
     res = run(item)
-    assert res.content.index("first")
-    assert res.content.index("second")
+    assert res.content.count("first") == 0
+    assert res.content.count("second") == 1
     assert res.title == "first"
     assert res != item
 
@@ -73,6 +73,5 @@ def test_code(tmpdir: Path) -> None:
 
     content = run(item).content
     assert content.count("highlight") == 2
-    assert content.count("abcd") == 1
     assert content.count("exit") == 1
     assert content.count("hmm") == 1
