@@ -3,10 +3,13 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 import click
+from livereload import Server
+from livereload.watcher import logger
 
-from . import config, pipeline
+from . import config, pipeline, watch
 
 
 @click.group()
@@ -29,3 +32,30 @@ def build(ctx: click.Context) -> None:
         pipeline.build(ctx.obj["config"])
     except (config.ConfigError, pipeline.PipelineError) as e:
         raise click.ClickException(str(e))
+
+
+@cli.command()
+@click.pass_context
+def serve(ctx: click.Context) -> None:
+    watcher = watch.Watch()
+    server = Server(watcher=watcher)
+
+    def builder() -> Optional[Dict[str, Any]]:
+        try:
+            c = config.read(ctx.obj["config"])
+            watcher.watch(str(ctx.obj["config"]), func=builder)
+            watcher.watch(str(c["build"]["collection-dir"]), func=builder)
+            watcher.watch(str(c["build"]["template-dir"]), func=builder)
+            pipeline.build(ctx.obj["config"])
+            return c
+        except (config.ConfigError, pipeline.PipelineError) as e:
+            logger.error("Error: %s", e)
+        return None
+
+    c = builder()
+    if c:
+        server.serve(
+            host=c["serve"]["host"],
+            port=c["serve"]["port"],
+            root=str(c["build"]["build-dir"])
+        )

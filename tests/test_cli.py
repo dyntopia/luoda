@@ -121,3 +121,38 @@ def test_successful_build(invoke: Callable, mocker: MockFixture) -> None:
     build = mocker.patch("luoda.pipeline.build")
     invoke("-c config build")
     build.assert_called_once_with(Path("config"))
+
+
+def test_successful_serve(invoke: Callable, mocker: MockFixture) -> None:
+    config = {
+        "build": {
+            "build-dir": "abcd",
+        },
+        "serve": {
+            "host": "127.0.0.1",
+            "port": 1234,
+        }
+    }
+    with open("config", "w") as f:
+        toml.dump(config, f)
+
+    mkdir("collections")
+    mkdir("templates")
+
+    serve = mocker.patch("luoda.cli.Server.serve")
+    invoke("-c config serve")
+    serve.assert_called_once_with(host="127.0.0.1", port=1234, root="abcd")
+
+
+def test_failed_serve(invoke: Callable, mocker: MockFixture) -> None:
+    config = {
+        "build": {
+            "collection-dir": "does-not-exist",
+        }
+    }
+    with open("config", "w") as f:
+        toml.dump(config, f)
+
+    serve = mocker.patch("luoda.cli.Server.serve")
+    invoke("-c config serve")
+    serve.assert_not_called()

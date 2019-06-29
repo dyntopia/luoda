@@ -40,6 +40,10 @@ schema = Schema({
         Required("paths"): [str],
         Required("ignore-paths", default=[]): [str],
     }],
+    Required("serve", default={}): {
+        Required("host", default="127.0.0.1"): str,
+        Required("port", default=8000): int,
+    },
     Required("extra", default={}): {
     },
 }, extra=ALLOW_EXTRA)
