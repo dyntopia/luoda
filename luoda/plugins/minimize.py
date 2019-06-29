@@ -13,13 +13,15 @@ def available() -> bool:
 
 
 def run(item: Any, **_kwargs: Any) -> Any:
-    content = minify(
-        input=item.content,
-        remove_comments=True,
-        remove_empty_space=True,
-        remove_all_empty_space=True,
-        reduce_empty_attributes=True,
-        reduce_boolean_attributes=True,
-        remove_optional_attribute_quotes=True,
-    )
-    return evolve(item, content=content)
+    if isinstance(item.content, str):
+        content = minify(
+            input=item.content,
+            remove_comments=True,
+            remove_empty_space=True,
+            remove_all_empty_space=True,
+            reduce_empty_attributes=True,
+            reduce_boolean_attributes=True,
+            remove_optional_attribute_quotes=True,
+        )
+        return evolve(item, content=content)
+    return item

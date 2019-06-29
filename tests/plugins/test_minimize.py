@@ -22,7 +22,8 @@ def test_run(tmpdir: Path) -> None:
         ("<html>\n\n\n", "<html>"),
         ("<div>\n<p>\n\n\n foo \n\n\n</p></div>", "<div><p> foo </p></div>"),
         ("<p>\n\n abcd \n</p>", "<p> abcd </p>"),
+        (b"<p>\n\n abcd \n</p>", b"<p>\n\n abcd \n</p>"),
     ]
 
     for a, b in tests:
-        assert run(Item(path=tmpdir, content=a)).content == b
+        assert run(Item(path=tmpdir, content=a)).content == b  # type: ignore
