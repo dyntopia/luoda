@@ -49,7 +49,7 @@ def run(item: Any, **_kwargs: Any) -> Any:
         author = soup.select_one("meta[name=author]")
         content = soup.select_one("div#content")
         date = soup.select_one("p.date")
-        title = soup.select_one("h1")
+        title = soup.select_one("h1") or soup.select_one("h2")
         if title:
             title.extract()
 
