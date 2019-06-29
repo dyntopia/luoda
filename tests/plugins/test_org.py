@@ -89,6 +89,7 @@ def test_run_with_options(tmpdir: Path) -> None:
     assert item.author == "Foo Bar"
     assert item.title == "option title"
     assert item.date == 86400.0
+    assert item.content.count("option title") == 0
     assert item.content.count("first") == 1
     assert item.content.count("second") == 1
     assert item.content.count("text123") == 1
