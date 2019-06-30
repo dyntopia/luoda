@@ -50,16 +50,10 @@ def run(item: Any, **_kwargs: Any) -> Any:
         author = soup.select_one("meta[name=author]")
         content = soup.select_one("div#content")
         date = soup.select_one("p.date")
-        title = soup.select_one("h1") or soup.select_one("h2")
-        if title:
-            title.extract()
-
-        # `org-html--build-meta-info' uses bogus titles to avoid invalid
-        # elements.
-        bogus = [
-            " *temp*",  # emacs24
-            "\u200e",  # emacs26
-        ]
+        title = soup.find(
+            lambda t: t.name in ["h1", "h2"]
+            and t.text not in [" *temp*", "\u200e"]
+        )
 
         highlight(soup)
         insert_refs(soup)
@@ -67,10 +61,10 @@ def run(item: Any, **_kwargs: Any) -> Any:
 
         return evolve(
             item,
-            content=str(content) if content else "",
             author=author.get("content") if author else "",
             file_date=parse_date(date.text.split()[-1]) if date else 0.0,
-            title=title.text if title and title.text not in bogus else "",
+            title=title.extract().text if title else "",
+            content=str(content) if content else "",
         )
     return item
 
