@@ -8,6 +8,7 @@ Plugin that reads org-mode files.
 This plugin also sets the author, date and title if available.
 """
 
+import re
 from pathlib import Path
 from shutil import which
 from subprocess import STDOUT, CalledProcessError, check_output
@@ -61,6 +62,7 @@ def run(item: Any, **_kwargs: Any) -> Any:
         ]
 
         highlight(soup)
+        insert_refs(soup)
 
         return evolve(
             item,
@@ -91,3 +93,25 @@ def highlight(soup: BeautifulSoup) -> None:
         ][0]
         markup = BeautifulSoup(colorize(src.text, lang), "html.parser")
         src.replace_with(markup)
+
+
+def insert_refs(soup: BeautifulSoup) -> None:
+    """
+    Insert code references.
+
+    Org-mode is capable of referencing parts of code blocks, e.g.:
+
+    #+BEGIN_SRC python
+    ...
+    print("hi")  # (ref:1)   -> <span id="coderef-1">
+    ...
+    #+END_SRC
+    See [[(1)]]            -> <a href="coderef-1">
+
+    However, the target <span> breaks when pygments transform code
+    blocks.  This function re-inserts the targets for code references.
+    """
+    pat = re.compile(r" \(([0-9])+\)$")
+    for ref in soup.find_all("span", class_="c1", text=pat):
+        match = pat.search(ref.text)
+        ref.attrs["id"] = "coderef-{}".format(match.group(1) if match else 0)

@@ -1,4 +1,4 @@
-# pylint: disable=W0621
+# pylint: disable=C1801,W0621
 #
 # Copyright (c) 2019, Hans Jerry Illikainen <hji@dyntopia.com>
 #
@@ -8,6 +8,7 @@ from pathlib import Path
 from subprocess import CalledProcessError
 from textwrap import dedent
 
+from bs4 import BeautifulSoup
 from pytest import raises
 from pytest_mock import MockFixture
 
@@ -125,3 +126,35 @@ def test_run_without_options_or_fallback(tmpdir: Path) -> None:
     assert item.author == ""
     assert item.file_date == 0.0
     assert item.content.count("text123") == 1
+
+
+def test_coderef(tmpdir: Path) -> None:
+    org = dedent(
+        """
+        #+begin_src python
+        print("foo")  # (ref:1)
+        print("bar")  # (ref:2)
+        #+end_src
+
+        #+begin_src c
+        printf("xyz"); // (ref:3)
+        #+end_src
+        abcd [[(1)]] [[(2)]] [[(3)]]
+        """
+    )
+    (tmpdir / "xyz.org").write_text(org)
+    item = run(Item(path=tmpdir / "xyz.org"))
+    soup = BeautifulSoup(item.content, "html.parser")
+
+    first, second = soup.select(".org-src-container")
+    assert len(first.select("#coderef-1")) == 1
+    assert len(first.select("#coderef-2")) == 1
+    assert len(first.select("#coderef-3")) == 0
+
+    assert len(second.select("#coderef-1")) == 0
+    assert len(second.select("#coderef-2")) == 0
+    assert len(second.select("#coderef-3")) == 1
+
+    assert len(soup.select("[href='#coderef-1']")) == 1
+    assert len(soup.select("[href='#coderef-2']")) == 1
+    assert len(soup.select("[href='#coderef-3']")) == 1
