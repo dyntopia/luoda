@@ -1,4 +1,4 @@
-# pylint: disable=W0621
+# pylint: disable=C0102,W0621
 #
 # Copyright (c) 2019, Hans Jerry Illikainen <hji@dyntopia.com>
 #
@@ -28,6 +28,7 @@ def test_without_git(tmpdir: Path) -> None:
 
     assert new_item.author == item.author
     assert new_item.file_date == item.file_date
+    assert new_item.dir_date == item.dir_date
     assert new_item.file_mtime != item.file_mtime
     assert new_item.dir_mtime != item.dir_mtime
 
@@ -43,6 +44,7 @@ def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
     new_item = run(item)
     assert new_item.author == item.author
     assert new_item.file_date == item.file_date
+    assert new_item.dir_date == item.dir_date
     assert new_item.file_mtime != item.file_mtime
     assert new_item.dir_mtime != item.dir_mtime
 
@@ -60,6 +62,7 @@ def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
     new_item = run(item)
     assert new_item.author == "bar"
     assert new_item.file_date == timestamp
+    assert new_item.dir_date == timestamp
     assert new_item.file_mtime != item.file_mtime
     assert new_item.dir_mtime != item.dir_mtime
 
@@ -77,6 +80,7 @@ def test_with_git_in_subdir(tmpdir: Path) -> None:
     new_item = run(item)
     assert new_item.author == item.author
     assert new_item.file_date == item.file_date
+    assert new_item.dir_date == item.dir_date
     assert new_item.file_mtime != item.file_mtime
 
     # after commit
@@ -93,8 +97,48 @@ def test_with_git_in_subdir(tmpdir: Path) -> None:
     new_item = run(item)
     assert new_item.author == "foo bar baz"
     assert new_item.file_date == timestamp
+    assert new_item.dir_date == timestamp
     assert new_item.file_mtime != item.file_mtime
     assert new_item.dir_mtime != item.dir_mtime
+
+
+def test_date(tmpdir: Path) -> None:  # pylint: disable=W0613
+    repo = Repo.init(".")
+
+    parent = Path("src")
+    parent.mkdir()
+
+    foo = parent / "foo"
+    bar = parent / "bar"
+
+    foo.touch()
+    bar.touch()
+
+    timestamp = int(time())
+
+    repo.stage([str(foo)])
+    repo.do_commit(
+        message=b"msg",
+        committer=b"foo <a@b>",
+        author=b"bar <x@y>",
+        author_timestamp=timestamp,
+    )
+
+    first = run(Item(path=foo))
+    assert first.file_date == timestamp
+    assert first.dir_date == timestamp
+
+    repo.stage([str(bar)])
+    repo.do_commit(
+        message=b"msg",
+        committer=b"foo <a@b>",
+        author=b"bar <x@y>",
+        author_timestamp=timestamp + 100,
+    )
+
+    second = run(Item(path=bar))
+    assert second.file_date == timestamp + 100
+    assert second.dir_date == timestamp
 
 
 def test_mtime(tmpdir: Path) -> None:

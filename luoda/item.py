@@ -12,6 +12,7 @@ from attr import attrib, attrs
 class Item:
     author = attrib(type=str, default="")
     content = attrib(type=Union[bytes, str], default="")
+    dir_date = attrib(type=float, default=0.0)
     dir_mtime = attrib(type=float, default=0.0)
     file_date = attrib(type=float, default=0.0)
     file_mtime = attrib(type=float, default=0.0)
