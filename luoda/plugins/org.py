@@ -60,14 +60,7 @@ def run(item: Any, **_kwargs: Any) -> Any:
             "\u200e",  # emacs26
         ]
 
-        for src in soup.select("pre.src"):
-            lang = [
-                x.replace("src-", "")
-                for x in src.attrs["class"]
-                if x.startswith("src-")
-            ][0]
-            markup = colorize(src.text, lang)
-            src.replace_with(BeautifulSoup(markup, "html.parser"))
+        highlight(soup)
 
         return evolve(
             item,
@@ -84,3 +77,17 @@ def parse_date(date: str) -> float:
         return mktime(strptime(date, "%Y-%m-%d"))
     except ValueError as e:
         raise PluginError(e)
+
+
+def highlight(soup: BeautifulSoup) -> None:
+    """
+    Highlight source code blocks.
+    """
+    for src in soup.select("pre.src"):
+        lang = [
+            x.replace("src-", "")
+            for x in src.attrs["class"]
+            if x.startswith("src-")
+        ][0]
+        markup = BeautifulSoup(colorize(src.text, lang), "html.parser")
+        src.replace_with(markup)
