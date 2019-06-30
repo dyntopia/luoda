@@ -70,6 +70,23 @@ def test_invalid_build_dir(tmpdir: Path) -> None:
         read(config)
 
 
+def test_invalid_highlight(tmpdir: Path) -> None:
+    config = tmpdir / "config"
+    config.write_text(
+        """
+        [build]
+        highlight = "abcdefgh"
+        collection-dir = "c"
+        template-dir = "t"
+        """
+    )
+    mkdir("t")
+    mkdir("c")
+
+    with raises(ConfigError, match="expected a pygments style"):
+        read(config)
+
+
 def test_extra(tmpdir: Path) -> None:
     config = tmpdir / "config"
     config.write_text(
