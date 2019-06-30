@@ -23,7 +23,7 @@ def available() -> bool:
 
 def run(item: Any, **_kwargs: Any) -> Any:
     stat = item.path.stat()
-    item = evolve(item, mtime=stat.st_mtime)
+    item = evolve(item, file_mtime=stat.st_mtime)
 
     git = find_git(item.path)
     if git:

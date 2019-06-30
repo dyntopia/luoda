@@ -28,7 +28,7 @@ def test_without_git(tmpdir: Path) -> None:
 
     assert new_item.author == item.author
     assert new_item.file_date == item.file_date
-    assert new_item.mtime != item.mtime
+    assert new_item.file_mtime != item.file_mtime
 
 
 def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
@@ -42,7 +42,7 @@ def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
     new_item = run(item)
     assert new_item.author == item.author
     assert new_item.file_date == item.file_date
-    assert new_item.mtime != item.mtime
+    assert new_item.file_mtime != item.file_mtime
 
     # after commit
     repo.stage([str(item.path)])
@@ -58,7 +58,7 @@ def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
     new_item = run(item)
     assert new_item.author == "bar"
     assert new_item.file_date == timestamp
-    assert new_item.mtime != item.mtime
+    assert new_item.file_mtime != item.file_mtime
 
 
 def test_with_git_in_subdir(tmpdir: Path) -> None:
@@ -74,7 +74,7 @@ def test_with_git_in_subdir(tmpdir: Path) -> None:
     new_item = run(item)
     assert new_item.author == item.author
     assert new_item.file_date == item.file_date
-    assert new_item.mtime != item.mtime
+    assert new_item.file_mtime != item.file_mtime
 
     # after commit
     repo.stage([item.path.name])
@@ -90,4 +90,4 @@ def test_with_git_in_subdir(tmpdir: Path) -> None:
     new_item = run(item)
     assert new_item.author == "foo bar baz"
     assert new_item.file_date == timestamp
-    assert new_item.mtime != item.mtime
+    assert new_item.file_mtime != item.file_mtime
