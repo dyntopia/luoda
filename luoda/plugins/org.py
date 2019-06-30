@@ -63,6 +63,7 @@ def run(item: Any, **_kwargs: Any) -> Any:
 
         highlight(soup)
         insert_refs(soup)
+        strip_js(soup)
 
         return evolve(
             item,
@@ -115,3 +116,24 @@ def insert_refs(soup: BeautifulSoup) -> None:
     for ref in soup.find_all("span", class_="c1", text=pat):
         match = pat.search(ref.text)
         ref.attrs["id"] = "coderef-{}".format(match.group(1) if match else 0)
+
+
+def strip_js(soup: BeautifulSoup) -> None:
+    """
+    Strip JavaScript attributes.
+
+    Org-mode inserts code references like so:
+
+    <a href=#coderef-1
+       class="coderef"
+       onmouseout="CodeHighlightOn(...);"
+       onmouseover="CodeHighlightOff(...);">
+
+    The `onmouseout` and `onmouseover` attributes are hardcoded in
+    org-mode (see `org-html-link`).  Org-mode exports the JavaScript
+    implementations for those events in <head>.  Since this plugin only
+    extracts the content, browser errors arise if they aren't removed.
+    """
+    attrs = {"onmouseover", "onmouseout"}
+    for tag in soup.find_all(lambda t: attrs.intersection(t.attrs)):
+        tag.attrs = {k: v for k, v in tag.attrs.items() if k not in attrs}
