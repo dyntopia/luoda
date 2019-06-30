@@ -27,7 +27,7 @@ def test_without_git(tmpdir: Path) -> None:
     new_item = run(item)
 
     assert new_item.author == item.author
-    assert new_item.date == item.date
+    assert new_item.file_date == item.file_date
     assert new_item.mtime != item.mtime
 
 
@@ -41,7 +41,7 @@ def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
     # before commit
     new_item = run(item)
     assert new_item.author == item.author
-    assert new_item.date == item.date
+    assert new_item.file_date == item.file_date
     assert new_item.mtime != item.mtime
 
     # after commit
@@ -57,7 +57,7 @@ def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
 
     new_item = run(item)
     assert new_item.author == "bar"
-    assert new_item.date == timestamp
+    assert new_item.file_date == timestamp
     assert new_item.mtime != item.mtime
 
 
@@ -73,7 +73,7 @@ def test_with_git_in_subdir(tmpdir: Path) -> None:
     # before commit
     new_item = run(item)
     assert new_item.author == item.author
-    assert new_item.date == item.date
+    assert new_item.file_date == item.file_date
     assert new_item.mtime != item.mtime
 
     # after commit
@@ -89,5 +89,5 @@ def test_with_git_in_subdir(tmpdir: Path) -> None:
 
     new_item = run(item)
     assert new_item.author == "foo bar baz"
-    assert new_item.date == timestamp
+    assert new_item.file_date == timestamp
     assert new_item.mtime != item.mtime

@@ -12,7 +12,7 @@ from attr import attrib, attrs
 class Item:
     author = attrib(type=str, default="")
     content = attrib(type=Union[bytes, str], default="")
-    date = attrib(type=float, default=0.0)
+    file_date = attrib(type=float, default=0.0)
     keywords = attrib(type=str, default="")
     mtime = attrib(type=float, default=0.0)
     path = attrib(type=Path)

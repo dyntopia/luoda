@@ -35,7 +35,7 @@ def run(item: Any, **_kwargs: Any) -> Any:
             item = evolve(
                 item,
                 author=re.sub(" <.*", "", commit.author.decode()),
-                date=commit.author_time,
+                file_date=commit.author_time,
             )
         except (KeyError, StopIteration):
             pass

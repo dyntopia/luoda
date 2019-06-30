@@ -73,7 +73,7 @@ def run(item: Any, **_kwargs: Any) -> Any:
             item,
             content=str(content) if content else "",
             author=author.get("content") if author else "",
-            date=parse_date(date.text.split()[-1]) if date else 0.0,
+            file_date=parse_date(date.text.split()[-1]) if date else 0.0,
             title=title.text if title and title.text not in bogus else "",
         )
     return item
