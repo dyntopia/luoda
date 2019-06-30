@@ -22,9 +22,6 @@ def available() -> bool:
 
 
 def run(item: Any, **_kwargs: Any) -> Any:
-    stat = item.path.stat()
-    item = evolve(item, file_mtime=stat.st_mtime)
-
     git = find_git(item.path)
     if git:
         repo = Repo(git)
@@ -40,7 +37,11 @@ def run(item: Any, **_kwargs: Any) -> Any:
         except (KeyError, StopIteration):
             pass
 
-    return item
+    return evolve(
+        item,
+        file_mtime=item.path.stat().st_mtime,
+        dir_mtime=item.path.parent.stat().st_mtime,
+    )
 
 
 def find_git(path: Optional[Path]) -> Optional[str]:

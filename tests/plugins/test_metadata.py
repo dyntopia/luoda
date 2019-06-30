@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 from pathlib import Path
-from time import time
+from time import sleep, time
 
 from dulwich.repo import Repo
 
@@ -29,6 +29,7 @@ def test_without_git(tmpdir: Path) -> None:
     assert new_item.author == item.author
     assert new_item.file_date == item.file_date
     assert new_item.file_mtime != item.file_mtime
+    assert new_item.dir_mtime != item.dir_mtime
 
 
 def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
@@ -43,6 +44,7 @@ def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
     assert new_item.author == item.author
     assert new_item.file_date == item.file_date
     assert new_item.file_mtime != item.file_mtime
+    assert new_item.dir_mtime != item.dir_mtime
 
     # after commit
     repo.stage([str(item.path)])
@@ -59,6 +61,7 @@ def test_with_git_in_cwd(tmpdir: Path) -> None:  # pylint: disable=W0613
     assert new_item.author == "bar"
     assert new_item.file_date == timestamp
     assert new_item.file_mtime != item.file_mtime
+    assert new_item.dir_mtime != item.dir_mtime
 
 
 def test_with_git_in_subdir(tmpdir: Path) -> None:
@@ -91,3 +94,16 @@ def test_with_git_in_subdir(tmpdir: Path) -> None:
     assert new_item.author == "foo bar baz"
     assert new_item.file_date == timestamp
     assert new_item.file_mtime != item.file_mtime
+    assert new_item.dir_mtime != item.dir_mtime
+
+
+def test_mtime(tmpdir: Path) -> None:
+    (tmpdir / "foo").touch()
+    item = run(Item(path=tmpdir / "foo"))
+    assert item.file_mtime == item.dir_mtime
+
+    sleep(0.01)
+
+    (tmpdir / "bar").touch()
+    new_item = run(Item(path=tmpdir / "foo"))
+    assert new_item.file_mtime < new_item.dir_mtime
